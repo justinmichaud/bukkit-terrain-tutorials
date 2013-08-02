@@ -1,8 +1,8 @@
 package me.jtjj222.biomegen;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.bukkit.Material;
@@ -13,7 +13,7 @@ import org.bukkit.generator.ChunkGenerator;
 
 public class BasicChunkGenerator extends ChunkGenerator {
 
-	void setBlock(int x, int y, int z, short[][] chunk, Material material) {
+	private void setBlock(int x, int y, int z, short[][] chunk, Material material) {
 		if (y < 256 && y >= 0 && x <= 16 && x >= 0 && z <= 16 && z >= 0) { 
 			if (chunk[y >> 4] == null)
 				chunk[y >> 4] = new short[16 * 16 * 16];
@@ -21,7 +21,7 @@ public class BasicChunkGenerator extends ChunkGenerator {
 		}
 	}
 
-	short getBlock(int x, int y, int z, short[][] chunk) {
+	private short getBlock(int x, int y, int z, short[][] chunk) {
 		if (y < 256 && y >= 0 && x <= 16 && x >= 0 && z <= 16 && z >= 0) { 
 			if (chunk[y >> 4] == null)
 				return 0;
@@ -44,7 +44,7 @@ public class BasicChunkGenerator extends ChunkGenerator {
 	 			int realZ = z + chunkZ * 16;
 				
 				//We get the 3 closest biome's to the temperature and rainfall at this block
-				HashMap<Biomes, Double> biomes = biomeGenerator.getBiomes(realX, realZ);
+				Map<Biomes, Double> biomes = biomeGenerator.getBiomes(realX, realZ);
 				//And tell bukkit (who tells the client) what the biggest biome here is
 				biomeGrid.setBiome(x, z, getDominantBiome(biomes));
 				
@@ -109,7 +109,7 @@ public class BasicChunkGenerator extends ChunkGenerator {
 	}
 
 	//We get the closest biome to send to the client (using the biomegrid)
-	private Biome getDominantBiome(HashMap<Biomes, Double> biomes) {
+	private Biome getDominantBiome(Map<Biomes, Double> biomes) {
 		double maxNoiz = 0.0;
 		Biomes maxBiome = null;
 		
@@ -122,7 +122,7 @@ public class BasicChunkGenerator extends ChunkGenerator {
 		return maxBiome.biome;
 	}
 
-	private double getDensity(int x, int y, int z, HashMap<Biomes, Double> biomes) {
+	private double getDensity(int x, int y, int z, Map<Biomes, Double> biomes) {
 		double noise = 0.0;
 		for (Biomes biome : biomes.keySet()) {
 			double weight = biomes.get(biome);
@@ -131,7 +131,7 @@ public class BasicChunkGenerator extends ChunkGenerator {
 		return noise;
 	}
 
-	private int getHeight(int x, int z, HashMap<Biomes, Double> biomes) {
+	private int getHeight(int x, int z, Map<Biomes, Double> biomes) {
 		double noise = 0.0;
 		for (Biomes biome : biomes.keySet()) {
 			double weight = biomes.get(biome);

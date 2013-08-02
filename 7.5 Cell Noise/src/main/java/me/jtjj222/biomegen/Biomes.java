@@ -1,6 +1,7 @@
 package me.jtjj222.biomegen;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import me.jtjj222.biomegen.noisegenerators.BiomeNoiseGenerator;
 import me.jtjj222.biomegen.noisegenerators.DesertNoiseGenerator;
@@ -55,7 +56,8 @@ public enum Biomes {
 	 * This is just so that we can limit the amount of calculations we have to do.
 	 * This could probably be cleaned up a bit
 	 */
-	public static HashMap<Biomes, Double> getBiomes(double temp, double rain) {
+	public static Map<Biomes, Double> getBiomes(double temp, double rain) {
+		final double threshold = 1000.0;
 		//We tell it the capacity we need to avoid expensive dynamic lengthening
 		HashMap<Biomes, Double> biomes = new HashMap<Biomes, Double>(3);
 		
@@ -75,19 +77,21 @@ public enum Biomes {
 			}
 			
 			else if (dist <= secondClosestDist) {
+				if (dist >= threshold) continue; //We don't want to calculate the noise values for biomes that have almost no influence
 				thirdClosestDist = secondClosestDist; thirdClosestBiome = secondClosestBiome;
 				secondClosestDist = dist; secondClosestBiome = biome;
 			}
 			
 			else if (dist <= thirdClosestDist) {
+				if (dist >= threshold) continue;
 				thirdClosestDist = dist; thirdClosestBiome = biome;
 			}
 		}
 		
 		// The 10 is just so that farther distances have less influence
 		biomes.put(closestBiome, 10.0/Math.sqrt(closestDist));
-		biomes.put(secondClosestBiome, 10.0/Math.sqrt(secondClosestDist));
-		biomes.put(thirdClosestBiome, 10.0/Math.sqrt(thirdClosestDist));
+		if (secondClosestBiome != null) biomes.put(secondClosestBiome, 10.0/Math.sqrt(secondClosestDist));
+		if (thirdClosestBiome != null) biomes.put(thirdClosestBiome, 10.0/Math.sqrt(thirdClosestDist));
 		
 		return biomes;
 	}
