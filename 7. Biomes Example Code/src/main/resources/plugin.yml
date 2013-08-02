@@ -1,0 +1,4 @@
+main: me.jtjj222.biomegen.BiomeGenPlugin
+version: ${project.version}
+name: BiomeGen
+load: STARTUP
