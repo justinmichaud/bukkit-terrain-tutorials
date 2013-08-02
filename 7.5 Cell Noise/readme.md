@@ -1,7 +1,7 @@
 # About
-This is the code for the 7th tutorial in the series of bukkit terrain generation, about biomes.
+This is the code for the 7.5th tutorial in the series of bukkit terrain generation, about voronoi noise for biomes.
 
-More info: [Bukkit Forums](http://forums.bukkit.org/threads/the-always-up-to-date-definitive-guide-to-terrain-generation-part-7-biomes.164484/)
+More info: [Bukkit forums](http://When.i.finish.writing.it)
 
 # How to build
 
