@@ -8,10 +8,11 @@ public abstract class BiomeNoiseGenerator {
 	// The perlin octave generator works the same way as
 	// a simplex octave generator (just faster on lower 
 	// dimensions i.e.. 2 and 3).
-	PerlinOctaveGenerator generator;
+	protected PerlinOctaveGenerator generator;
 	double magnitude = 64.0;
 	
-	public BiomeNoiseGenerator(World world) {
+	// We use a state machine in order to handle multiple worlds (thanks @Icyene)
+	public void setWorld(World world) {
 		this.generator = new PerlinOctaveGenerator(world, 8);
 	}
 

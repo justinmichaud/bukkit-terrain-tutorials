@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
-import me.jtjj222.biomegen.noisegenerators.BiomeNoiseGenerator;
-
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
@@ -14,10 +12,6 @@ import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
 
 public class BasicChunkGenerator extends ChunkGenerator {
-
-	// In case the plugin is used in multiple worlds, we store a map between worlds
-	// and biome handler instances
-	public HashMap<String, BiomeHandlers> worldBiomeHandlers = new HashMap<String, BiomeHandlers>();
 
 	void setBlock(int x, int y, int z, short[][] chunk, Material material) {
 		if (y < 256 && y >= 0 && x <= 16 && x >= 0 && z <= 16 && z >= 0) { 
@@ -39,8 +33,9 @@ public class BasicChunkGenerator extends ChunkGenerator {
 	@Override
 	public short[][] generateExtBlockSections(World world, Random rand, int chunkX,
 			int chunkZ, BiomeGrid biomeGrid) {
+		Biomes.setWorld(world);
+		
 		short[][] chunk = new short[world.getMaxHeight() / 16][];
-
 		BiomeGenerator biomeGenerator = new BiomeGenerator(world);
 
 		for (int x=0; x<16; x++) {
@@ -58,7 +53,7 @@ public class BasicChunkGenerator extends ChunkGenerator {
 
 				// To make it more maintainable, we've abstracted finding height
 				// and density values
-				int bottomHeight = getHeight(realX, realZ, world, biomes);
+				int bottomHeight = getHeight(realX, realZ, biomes);
 				
 				// This has been lowered to 10 to avoid massive performance issues.
 				// We take (10 vertical blocks * 3 (closest) biomes * 16 columns)
@@ -70,7 +65,7 @@ public class BasicChunkGenerator extends ChunkGenerator {
 
 				for (int y=0; y<maxHeight; y++) {
 					if (y > bottomHeight) {
-						double density = getDensity(realX, y, realZ, world, biomes);
+						double density = getDensity(realX, y, realZ, biomes);
 
 						if (density > threshold) setBlock(x,y,z,chunk,material);
 
@@ -127,34 +122,22 @@ public class BasicChunkGenerator extends ChunkGenerator {
 		return maxBiome.biome;
 	}
 
-	private double getDensity(int x, int y, int z, World world, HashMap<Biomes, Double> biomes) {
+	private double getDensity(int x, int y, int z, HashMap<Biomes, Double> biomes) {
 		double noise = 0.0;
 		for (Biomes biome : biomes.keySet()) {
 			double weight = biomes.get(biome);
-			noise += getHandler(biome, world).get3dNoise(x, y, z)*weight;
+			noise += biome.generator.get3dNoise(x, y, z)*weight;
 		}
 		return noise;
 	}
 
-	private int getHeight(int x, int z, World world, HashMap<Biomes, Double> biomes) {
+	private int getHeight(int x, int z, HashMap<Biomes, Double> biomes) {
 		double noise = 0.0;
 		for (Biomes biome : biomes.keySet()) {
 			double weight = biomes.get(biome);
-			noise += getHandler(biome, world).get2dNoise(x, z)*weight;
+			noise += biome.generator.get2dNoise(x, z)*weight;
 		}
 		return (int) (noise + 64);
-	}
-	
-	//Gets the handler to use for the provided world and biome. If one doesn't exist, it creates it
-	private BiomeNoiseGenerator getHandler(Biomes biome, World world) {
-		if (!worldBiomeHandlers.containsKey(world.getName())) {
-			try {
-				worldBiomeHandlers.put(world.getName(), new BiomeHandlers(world));
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		return worldBiomeHandlers.get(world.getName()).getHandler(biome);
 	}
 
 	@Override

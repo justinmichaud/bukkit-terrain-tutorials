@@ -4,8 +4,9 @@ import org.bukkit.World;
 
 public class SwampNoiseGenerator extends BiomeNoiseGenerator {
 
-	public SwampNoiseGenerator(World world) {
-		super(world);
+	@Override
+	public void setWorld(World world) {
+		super.setWorld(world);
 	}
 	
 	@Override

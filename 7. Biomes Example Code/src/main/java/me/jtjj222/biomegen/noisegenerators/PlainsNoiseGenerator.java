@@ -4,8 +4,9 @@ import org.bukkit.World;
 
 public class PlainsNoiseGenerator extends BiomeNoiseGenerator {
 
-	public PlainsNoiseGenerator(World world) {
-		super(world);
+	@Override
+	public void setWorld(World world) {
+		super.setWorld(world);
 		this.generator.setScale(1.0/256.0);
 		this.magnitude = 3.0;
 	}

@@ -4,8 +4,9 @@ import org.bukkit.World;
 
 public class DesertNoiseGenerator extends BiomeNoiseGenerator {
 
-	public DesertNoiseGenerator(World world) {
-		super(world);
+	@Override
+	public void setWorld(World world) {
+		super.setWorld(world);
 		this.generator.setScale(1.0/64.0);
 		this.magnitude = 6.0;
 	}

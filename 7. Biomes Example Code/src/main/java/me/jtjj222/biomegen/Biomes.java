@@ -9,6 +9,7 @@ import me.jtjj222.biomegen.noisegenerators.HillsNoiseGenerator;
 import me.jtjj222.biomegen.noisegenerators.PlainsNoiseGenerator;
 import me.jtjj222.biomegen.noisegenerators.SwampNoiseGenerator;
 
+import org.bukkit.World;
 import org.bukkit.block.Biome;
 
 /**
@@ -32,19 +33,19 @@ import org.bukkit.block.Biome;
 public enum Biomes {
 	
 	//We store the biome, handler and the temperature and rainfall for each biome.
-	DESERT(Biome.DESERT, DesertNoiseGenerator.class, 70, 0),
-	FOREST(Biome.FOREST, ForestNoiseGenerator.class, 50, 60),
-	PLAINS(Biome.PLAINS, PlainsNoiseGenerator.class, 50, 30),
-	SWAMP(Biome.SWAMPLAND, SwampNoiseGenerator.class, 40, 70),
-	HILLS(Biome.EXTREME_HILLS, HillsNoiseGenerator.class, 50, 10);
+	DESERT(Biome.DESERT, new DesertNoiseGenerator(), 70, 0),
+	FOREST(Biome.FOREST, new ForestNoiseGenerator(), 50, 60),
+	PLAINS(Biome.PLAINS, new PlainsNoiseGenerator(), 50, 30),
+	SWAMP(Biome.SWAMPLAND, new SwampNoiseGenerator(), 40, 70),
+	HILLS(Biome.EXTREME_HILLS, new HillsNoiseGenerator(), 50, 10);
 	
 	public final Biome biome;
 	public final double optimumTemperature, optimumRainfall;
-	public Class<? extends BiomeNoiseGenerator> generatorClass;
+	public BiomeNoiseGenerator generator;
 	
-	private Biomes(Biome biome, Class<? extends BiomeNoiseGenerator> generatorClass, double temp, double rain) {
+	private Biomes(Biome biome, BiomeNoiseGenerator generator, double temp, double rain) {
 		this.biome = biome;
-		this.generatorClass = generatorClass;
+		this.generator = generator;
 		this.optimumTemperature = temp;
 		this.optimumRainfall = rain;
 	}
@@ -93,5 +94,12 @@ public enum Biomes {
 	
 	private static double getSquaredDistance(Biomes biome, double temp, double rain) {
 		return Math.abs((biome.optimumTemperature-temp)*(biome.optimumTemperature-temp) + (biome.optimumRainfall-rain)*(biome.optimumRainfall-rain));
+	}
+
+	public static void setWorld(World world) {
+		for (Biomes biome : Biomes.values()) {
+			biome.generator.setWorld(world);
+		}
+		
 	}
 }
