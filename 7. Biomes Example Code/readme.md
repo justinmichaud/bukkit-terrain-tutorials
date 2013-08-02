@@ -1,14 +1,14 @@
-# About #
+# About
 This is the code for the 7th tutorial in the series of bukkit terrain generation, about biomes.
 
 More info <insert link when written>
 
-# How to build #
+# How to build
 
 I chose to use Maven to handle the projects. It is a tool that lets you manage dependencies and how your project builds across multiple systems. To build, you can either install a maven plugin for your ide (eclipse users can check out [m2eclipse](http://www.eclipse.org/m2e/), netbeans comes with it already) or run this command in the project directory:
-{{
+```
 mvn package
-}}
+```
 Then find your jar file in target/ folder
 
 # How to help out #
@@ -20,7 +20,7 @@ I am currently working on:
 Any help would be appreciated. If you know of a cool topic, or have something to help out with, pm me on the bukkit forums (@jtjj222)
 
 # What's in the folders #
-{{
+```
 | pom.xml - This file tells maven how to build the project
 | src
  \ me
@@ -33,4 +33,4 @@ Any help would be appreciated. If you know of a cool topic, or have something to
     | noisegenerators
      \ BiomeNoiseGenerator.java   A superclass for each specific biome's handler
      | <biome>NoiseGenerator.java A class that handles generating the noise values for this biome
-}}
+```
